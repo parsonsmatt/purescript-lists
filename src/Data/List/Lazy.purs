@@ -234,7 +234,7 @@ infixr 6 cons as :
 
 -- | Append an element to the end of a list, creating a new list.
 -- |
--- | Running time: `O(2n)`
+-- | Running time: `O(n)`
 snoc :: forall a. List a -> a -> List a
 snoc xs x = foldr cons (cons x nil) xs
 
