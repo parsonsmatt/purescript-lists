@@ -3,9 +3,9 @@ module Test.Data.List.Lazy (testListLazy) where
 import Prelude
 
 import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Console (CONSOLE, log)
+import Control.Monad.Eff.Console (CONSOLE, log, logShow)
 
-import Data.List.Lazy (List, nil, cons, zip, zipWith, intersectBy, intersect, (\\), deleteBy, delete, unionBy, union, nubBy, nub, groupBy, group, span, dropWhile, drop, takeWhile, take, catMaybes, mapMaybe, range, filter, concat, concatMap, reverse, alterAt, modifyAt, updateAt, deleteAt, insertAt, (!!), uncons, init, tail, last, head, insertBy, insert, length, null, singleton, fromFoldable, transpose, (:))
+import Data.List.Lazy (List, nil, cons, zip, zipWith, intersectBy, intersect, (\\), deleteBy, delete, unionBy, union, nubBy, nub, groupBy, group, span, dropWhile, drop, takeWhile, take, catMaybes, mapMaybe, range, filter, concat, concatMap, reverse, alterAt, modifyAt, updateAt, deleteAt, insertAt, (!!), uncons, init, tail, last, head, insertBy, insert, length, null, singleton, fromFoldable, transpose, (:), replicate)
 import Data.Maybe (Maybe(..), isNothing, fromJust)
 import Data.Tuple (Tuple(..))
 
@@ -26,11 +26,11 @@ testListLazy = do
   assert $ (range 0 5) == l [0, 1, 2, 3, 4, 5]
   assert $ (range 2 (-3)) == l [2, 1, 0, -1, -2, -3]
 
-  -- log "replicate should produce an list containg an item a specified number of times"
-  -- assert $ replicate 3 true == l [true, true, true]
-  -- assert $ replicate 1 "foo" == l ["foo"]
-  -- assert $ replicate 0 "foo" == l []
-  -- assert $ replicate (-1) "foo" == l []
+  log "replicate should produce an list containg an item a specified number of times"
+  assert $ replicate 3 true == l [true, true, true]
+  assert $ replicate 1 "foo" == l ["foo"]
+  assert $ replicate 0 "foo" == l []
+  assert $ replicate (-1) "foo" == l []
 
   -- log "replicateM should perform the monadic action the correct number of times"
   -- assert $ replicateM 3 (Just 1) == Just (l [1, 1, 1])

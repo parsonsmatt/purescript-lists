@@ -18,6 +18,8 @@ module Data.List.Lazy
 
   , singleton
   , (..), range
+  , replicate
+  -- , replicateM
   -- , some
   -- , many
   , repeat
@@ -165,6 +167,10 @@ range start end | start == end = singleton start
   where
   go s e step' rest | s == e = (cons s rest)
                     | otherwise = go (s + step') e step' (cons s rest)
+
+-- | Create a list with repeated instances of a value.
+replicate :: forall a. Int -> a -> List a
+replicate i xs = take i (repeat xs)
 
 -- | Create a list by repeating an element
 repeat :: forall a. a -> List a
@@ -438,7 +444,7 @@ take :: forall a. Int -> List a -> List a
 take n xs = List (go n <$> runList xs)
   where
   go :: Int -> Step a -> Step a
-  go 0 _ = Nil
+  go i _ | i <= 0 = Nil
   go _ Nil = Nil
   go n (Cons x xs) = Cons x (take (n - 1) xs)
 
