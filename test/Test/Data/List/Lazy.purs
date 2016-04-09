@@ -1,4 +1,4 @@
-module Test.Data.List.Lazy (mestListLazy) where
+module Test.Data.List.Lazy (testListLazy) where
 
 import Prelude
 
@@ -26,6 +26,9 @@ testListLazy = do
   log "range should create an inclusive list of integers for the specified start and end"
   assert $ (range 0 5) == l [0, 1, 2, 3, 4, 5]
   assert $ (range 2 (-3)) == l [2, 1, 0, -1, -2, -3]
+
+  log "range should be lazy"
+  assert $ head (range 0 100000000) == Just 0
 
   log "replicate should produce an list containg an item a specified number of times"
   assert $ replicate 3 true == l [true, true, true]
@@ -271,7 +274,7 @@ testListLazy = do
   assert $ foldM (\_ _ -> Nothing) 0 (range 1 10) == Nothing
 
   log "foldM should work ok on infinite lists"
-  assert let infs = iterate (+1) 1
+  assert let infs = iterate (_ + 1) 1
              f acc x = if x >= 10 then Nothing else Just (cons 0 acc)
           in foldM f nil infs == Nothing
 

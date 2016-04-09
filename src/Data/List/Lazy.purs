@@ -162,11 +162,15 @@ infix 8 range as ..
 
 -- | Create a list containing a range of integers, including both endpoints.
 range :: Int -> Int -> List Int
-range start end | start == end = singleton start
-                | otherwise = go end start (if start > end then 1 else -1) nil
+range start end
+    | start > end =
+        let g x | x >= end  = Just (Tuple x (x - 1))
+                | otherwise = Nothing
+         in unfoldr g start
+    | otherwise = unfoldr f start
   where
-  go s e step' rest | s == e = (cons s rest)
-                    | otherwise = go (s + step') e step' (cons s rest)
+    f x | x <= end  = Just (Tuple x (x + 1))
+        | otherwise = Nothing
 
 -- | Create a list with repeated instances of a value.
 replicate :: forall a. Int -> a -> List a
