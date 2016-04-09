@@ -114,17 +114,20 @@ testListLazy = do
   assert $ l [1, 2, 3] !! 6 == Nothing
   assert $ l [1, 2, 3] !! (-1) == Nothing
 
-  -- log "elemIndex should return the index of an item that a predicate returns true for in an list"
-  -- assert $ elemIndex 1 (l [1, 2, 1]) == Just 0
-  -- assert $ elemIndex 4 (l [1, 2, 1]) == Nothing
+  log "elemIndex should return the index of an item that a predicate returns true for in an list"
+  assert $ elemIndex 1 (l [1, 2, 1]) == Just 0
+  assert $ elemIndex 4 (l [1, 2, 1]) == Nothing
 
   -- log "elemLastIndex should return the last index of an item in an list"
   -- assert $ elemLastIndex 1 (l [1, 2, 1]) == Just 2
   -- assert $ elemLastIndex 4 (l [1, 2, 1]) == Nothing
 
-  -- log "findIndex should return the index of an item that a predicate returns true for in an list"
-  -- assert $ findIndex (/= 1) (l [1, 2, 1]) == Just 1
-  -- assert $ findIndex (== 3) (l [1, 2, 1]) == Nothing
+  log "findIndex should return the index of an item that a predicate returns true for in an list"
+  assert $ findIndex (/= 1) (l [1, 2, 1]) == Just 1
+  assert $ findIndex (== 3) (l [1, 2, 1]) == Nothing
+
+  log "findIndex should work on huge lists"
+  assert $ findIndex (== 3) (range 0 100000000) == Just 3
 
   -- log "findLastIndex should return the last index of an item in an list"
   -- assert $ findLastIndex (/= 1) (l [2, 1, 2]) == Just 2
@@ -186,6 +189,9 @@ testListLazy = do
   -- log "sortBy should reorder a list into ascending order based on the result of a comparison function"
   -- assert $ sortBy (flip compare) (l [1, 3, 2, 5, 6, 4]) == l [6, 5, 4, 3, 2, 1]
 
+  log "slice should work on infinite lists"
+  assert $ (slice 3 5 (repeat 0)) == l [0, 0]
+
   log "take should keep the specified number of items from the front of an list, discarding the rest"
   assert $ (take 1 (l [1, 2, 3])) == l [1]
   assert $ (take 2 (l [1, 2, 3])) == l [1, 2]
@@ -195,6 +201,9 @@ testListLazy = do
   assert $ (takeWhile (_ /= 2) (l [1, 2, 3])) == l [1]
   assert $ (takeWhile (_ /= 3) (l [1, 2, 3])) == l [1, 2]
   assert $ (takeWhile (_ /= 1) nil') == nil'
+
+  log "takeWhile should work on huge lists"
+  assert $ (takeWhile (_ /= 3) (range 0 100000000)) == l [0, 1, 2]
 
   log "drop should remove the specified number of items from the front of an list"
   assert $ (drop 1 (l [1, 2, 3])) == l [2, 3]

@@ -41,9 +41,9 @@ module Data.List.Lazy
   , uncons
 
   , (!!), index
-  -- , elemIndex
+  , elemIndex
   -- , elemLastIndex
-  -- , findIndex
+  , findIndex
   -- , findLastIndex
   , insertAt
   , deleteAt
@@ -62,7 +62,7 @@ module Data.List.Lazy
   -- , sort
   -- , sortBy
 
-  -- , slice
+  , slice
   , take
   , takeWhile
   , drop
@@ -314,6 +314,22 @@ index xs = go (step xs)
 -- | An infix synonym for `index`.
 infixl 8 index as !!
 
+-- | Find the index of the first element equal to the specified element.
+elemIndex :: forall a. Eq a => a -> List a -> Maybe Int
+elemIndex x = findIndex (_ == x)
+
+-- | Find the first index for which a predicate holds.
+findIndex :: forall a. (a -> Boolean) -> List a -> Maybe Int
+findIndex fn = go 0
+  where
+  go :: Int -> List a -> Maybe Int
+  go n list = do
+      o <- uncons list 
+      if fn o.head 
+         then pure n 
+         else go (n + 1) o.tail
+
+
 -- | Insert an element into a list at the specified index, returning a new
 -- | list or `Nothing` if the index is out-of-bounds.
 -- |
@@ -467,6 +483,10 @@ catMaybes = mapMaybe id
 --------------------------------------------------------------------------------
 -- Sublists --------------------------------------------------------------------
 --------------------------------------------------------------------------------
+
+-- | Extract a sublist by a start and end index.
+slice :: forall a. Int -> Int -> List a -> List a
+slice start end xs = take (end - start) (drop start xs)
 
 -- | Take the specified number of elements from the front of a list.
 -- |
