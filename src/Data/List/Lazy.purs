@@ -55,7 +55,7 @@ module Data.List.Lazy
   , concat
   , concatMap
   , filter
-  -- , filterM
+  , filterM
   , mapMaybe
   , catMaybes
 
@@ -89,7 +89,7 @@ module Data.List.Lazy
 
   , transpose
 
-  -- , foldM
+  , foldM
   ) where
 
 import Prelude
@@ -420,6 +420,24 @@ filter p xs = List (go <$> runList xs)
     | p x = Cons x (filter p xs)
     | otherwise = go (step xs)
 
+-- | Filter where the predicate returns a monadic `Boolean`.
+-- |
+-- | For example:
+-- |
+-- | ```purescript
+-- | powerSet :: forall a. [a] -> [[a]]
+-- | powerSet = filterM (const [true, false])
+-- | ```
+filterM :: forall a m. Monad m => (a -> m Boolean) -> List a -> m (List a)
+filterM p list =
+    case uncons list of
+         Nothing -> pure nil
+         Just { head: x, tail: xs } -> do
+             b <- p x
+             xs' <- filterM p xs
+             pure if b then cons x xs' else xs'
+
+
 -- | Apply a function to each element in a list, keeping only the results which
 -- | contain a value.
 -- |
@@ -665,6 +683,17 @@ transpose xs =
         Just { head: x, tail: xs } ->
           (x : mapMaybe head xss) : transpose (xs : mapMaybe tail xss)
 
+--------------------------------------------------------------------------------
+-- Folding ---------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+-- | Perform a fold using a monadic step function.
+foldM :: forall m a b. Monad m => (a -> b -> m a) -> a -> List b -> m a
+foldM f a xs =
+    case uncons xs of
+         Nothing -> pure a
+         Just { head: b, tail: bs } ->
+                       f a b >>= \a' -> foldM f a' bs
 
 --------------------------------------------------------------------------------
 -- Instances -------------------------------------------------------------------

@@ -1,10 +1,11 @@
-module Test.Data.List.Lazy (testListLazy) where
+module Test.Data.List.Lazy (mestListLazy) where
 
 import Prelude
 
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log, logShow)
 
+import Math ((%))
 import Data.List.Lazy
 import Data.Maybe (Maybe(..), isNothing, fromJust)
 import Data.Tuple (Tuple(..))
@@ -166,9 +167,9 @@ testListLazy = do
   log "filter should remove items that don't match a predicate"
   assert $ filter odd (range 0 10) == l [1, 3, 5, 7, 9]
 
-  -- log "filterM should remove items that don't match a predicate while using a monadic behaviour"
-  -- assert $ filterM (Just <<< odd) (range 0 10) == Just (l [1, 3, 5, 7, 9])
-  -- assert $ filterM (const Nothing) (range 0 10) == Nothing
+  log "filterM should remove items that don't match a predicate while using a monadic behaviour"
+  assert $ filterM (Just <<< odd) (range 0 10) == Just (l [1, 3, 5, 7, 9])
+  assert $ filterM (const Nothing) (repeat 0) == Nothing
 
   log "mapMaybe should transform every item in an list, throwing out Nothing values"
   assert $ mapMaybe (\x -> if x /= 0 then Just x else Nothing) (l [0, 1, 0, 0, 2, 3]) == l [1, 2, 3]
@@ -265,24 +266,28 @@ testListLazy = do
   log "unzip should deconstruct a list of tuples into a tuple of lists"
   assert $ unzip (l [Tuple 1 "a", Tuple 2 "b", Tuple 3 "c"]) == Tuple (l [1, 2, 3]) (l ["a", "b", "c"])
 
-  -- log "foldM should perform a fold using a monadic step function"
-  -- assert $ foldM (\x y -> Just (x + y)) 0 (range 1 10) == Just 55
-  -- assert $ foldM (\_ _ -> Nothing) 0 (range 1 10) == Nothing
+  log "foldM should perform a fold using a monadic step function"
+  assert $ foldM (\x y -> Just (x + y)) 0 (range 1 10) == Just 55
+  assert $ foldM (\_ _ -> Nothing) 0 (range 1 10) == Nothing
 
-  -- log "can find the first 10 primes using lazy lists"
-  -- let eratos :: L.List Number -> L.List Number
-  --     eratos xs = Control.Lazy.defer \_ ->
-  --       case L.uncons xs of
-  --         Nothing -> L.nil'
-  --         Just (Tuple p xs) -> p `L.cons` eratos (L.filter (\x -> x % p /= 0) xs)
+  log "foldM should work ok on infinite lists"
+  assert let infs = iterate (+1) 1
+             f acc x = if x >= 10 then Nothing else Just (cons 0 acc)
+          in foldM f nil infs == Nothing
 
-  --     upFrom = L.iterate (1 +)
 
-  --     primes = eratos $ upFrom 2
-  -- assert $ L.fromList (L.take 10 primes) == [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
-  --
-  --
-  --
+  log "can find the first 10 primes using lazy lists"
+  let eratos :: List Int -> List Int
+      eratos xs = Control.Lazy.defer \_ ->
+        case uncons xs of
+          Nothing -> nil
+          Just { head: p, tail: xs } -> p `cons` eratos (filter (\x -> x `mod` p /= 0) xs)
+
+      upFrom = iterate (1 + _)
+
+      primes = eratos $ upFrom 2
+  assert $ take 10 primes == l [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+
   log "transpose"
   assert $ transpose (l [l [1,2,3], l[4,5,6], l [7,8,9]]) ==
                      (l [l [1,4,7], l[2,5,8], l [3,6,9]])
