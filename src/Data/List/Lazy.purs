@@ -30,7 +30,7 @@ module Data.List.Lazy
   , length
 
   , (:), cons
-  -- , snoc
+  , snoc
   , insert
   , insertBy
 
@@ -42,9 +42,9 @@ module Data.List.Lazy
 
   , (!!), index
   , elemIndex
-  -- , elemLastIndex
+  , elemLastIndex
   , findIndex
-  -- , findLastIndex
+  , findLastIndex
   , insertAt
   , deleteAt
   , updateAt
@@ -232,6 +232,12 @@ cons x xs = List $ defer \_ -> Cons x xs
 -- | Running time: `O(1)`
 infixr 6 cons as :
 
+-- | Append an element to the end of a list, creating a new list.
+-- |
+-- | Running time: `O(2n)`
+snoc :: forall a. List a -> a -> List a
+snoc xs x = foldr cons (cons x nil) xs
+
 -- | Insert an element into a sorted list.
 -- |
 -- | Running time: `O(n)`
@@ -318,6 +324,10 @@ infixl 8 index as !!
 elemIndex :: forall a. Eq a => a -> List a -> Maybe Int
 elemIndex x = findIndex (_ == x)
 
+-- | Find the index of the last element equal to the specified element.
+elemLastIndex :: forall a. Eq a => a -> List a -> Maybe Int
+elemLastIndex x = findLastIndex (_ == x)
+
 -- | Find the first index for which a predicate holds.
 findIndex :: forall a. (a -> Boolean) -> List a -> Maybe Int
 findIndex fn = go 0
@@ -329,6 +339,9 @@ findIndex fn = go 0
          then pure n 
          else go (n + 1) o.tail
 
+-- | Find the last index for which a predicate holds.
+findLastIndex :: forall a. (a -> Boolean) -> List a -> Maybe Int
+findLastIndex fn xs = ((length xs - 1) -) <$> findIndex fn (reverse xs)
 
 -- | Insert an element into a list at the specified index, returning a new
 -- | list or `Nothing` if the index is out-of-bounds.

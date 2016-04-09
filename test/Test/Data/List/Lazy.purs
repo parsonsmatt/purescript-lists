@@ -57,9 +57,9 @@ testListLazy = do
   assert $ length (l [1]) == 1
   assert $ length (l [1, 2, 3, 4, 5]) == 5
 
-  -- log "snoc should add an item to the end of an list"
-  -- assert $ l [1, 2, 3] `snoc` 4 == l [1, 2, 3, 4]
-  -- assert $ nil' `snoc` 1 == l [1]
+  log "snoc should add an item to the end of an list"
+  assert $ l [1, 2, 3] `snoc` 4 == l [1, 2, 3, 4]
+  assert $ nil' `snoc` 1 == l [1]
 
   log "insert should add an item at the appropriate place in a sorted list"
   assert $ insert 1.5 (l [1.0, 2.0, 3.0]) == l [1.0, 1.5, 2.0, 3.0]
@@ -118,9 +118,9 @@ testListLazy = do
   assert $ elemIndex 1 (l [1, 2, 1]) == Just 0
   assert $ elemIndex 4 (l [1, 2, 1]) == Nothing
 
-  -- log "elemLastIndex should return the last index of an item in an list"
-  -- assert $ elemLastIndex 1 (l [1, 2, 1]) == Just 2
-  -- assert $ elemLastIndex 4 (l [1, 2, 1]) == Nothing
+  log "elemLastIndex should return the last index of an item in an list"
+  assert $ elemLastIndex 1 (l [1, 2, 1]) == Just 2
+  assert $ elemLastIndex 4 (l [1, 2, 1]) == Nothing
 
   log "findIndex should return the index of an item that a predicate returns true for in an list"
   assert $ findIndex (/= 1) (l [1, 2, 1]) == Just 1
@@ -129,9 +129,9 @@ testListLazy = do
   log "findIndex should work on huge lists"
   assert $ findIndex (== 3) (range 0 100000000) == Just 3
 
-  -- log "findLastIndex should return the last index of an item in an list"
-  -- assert $ findLastIndex (/= 1) (l [2, 1, 2]) == Just 2
-  -- assert $ findLastIndex (== 3) (l [2, 1, 2]) == Nothing
+  log "findLastIndex should return the last index of an item in an list"
+  assert $ findLastIndex (/= 1) (l [2, 1, 2]) == Just 2
+  assert $ findLastIndex (== 3) (l [2, 1, 2]) == Nothing
 
   log "insertAt should add an item at the specified index"
   assert $ (insertAt 0 1 (l [2, 3])) == (l [1, 2, 3])
