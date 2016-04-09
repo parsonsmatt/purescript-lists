@@ -5,7 +5,7 @@ import Prelude
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log, logShow)
 
-import Data.List.Lazy (List, nil, cons, zip, zipWith, intersectBy, intersect, (\\), deleteBy, delete, unionBy, union, nubBy, nub, groupBy, group, span, dropWhile, drop, takeWhile, take, catMaybes, mapMaybe, range, filter, concat, concatMap, reverse, alterAt, modifyAt, updateAt, deleteAt, insertAt, (!!), uncons, init, tail, last, head, insertBy, insert, length, null, singleton, fromFoldable, transpose, (:), replicate)
+import Data.List.Lazy (List, nil, cons, zip, zipWith, intersectBy, intersect, (\\), deleteBy, delete, unionBy, union, nubBy, nub, groupBy, group, span, dropWhile, drop, takeWhile, take, catMaybes, mapMaybe, range, filter, concat, concatMap, reverse, alterAt, modifyAt, updateAt, deleteAt, insertAt, (!!), uncons, init, tail, last, head, insertBy, insert, length, null, singleton, fromFoldable, transpose, (:), replicate, replicateM)
 import Data.Maybe (Maybe(..), isNothing, fromJust)
 import Data.Tuple (Tuple(..))
 
@@ -32,11 +32,11 @@ testListLazy = do
   assert $ replicate 0 "foo" == l []
   assert $ replicate (-1) "foo" == l []
 
-  -- log "replicateM should perform the monadic action the correct number of times"
-  -- assert $ replicateM 3 (Just 1) == Just (l [1, 1, 1])
-  -- assert $ replicateM 1 (Just 1) == Just (l [1])
-  -- assert $ replicateM 0 (Just 1) == Just (l [])
-  -- assert $ replicateM (-1) (Just 1) == Just (l [])
+  log "replicateM should perform the monadic action the correct number of times"
+  assert $ replicateM 3 (Just 1) == Just (l [1, 1, 1])
+  assert $ replicateM 1 (Just 1) == Just (l [1])
+  assert $ replicateM 0 (Just 1) == Just (l [])
+  assert $ replicateM (-1) (Just 1) == Just (l [])
 
   -- some
   -- many

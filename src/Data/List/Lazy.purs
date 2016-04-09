@@ -19,7 +19,7 @@ module Data.List.Lazy
   , singleton
   , (..), range
   , replicate
-  -- , replicateM
+  , replicateM
   -- , some
   -- , many
   , repeat
@@ -171,6 +171,15 @@ range start end | start == end = singleton start
 -- | Create a list with repeated instances of a value.
 replicate :: forall a. Int -> a -> List a
 replicate i xs = take i (repeat xs)
+
+-- | Perform a monadic action `n` times collecting all of the results.
+replicateM :: forall m a. Monad m => Int -> m a -> m (List a)
+replicateM n m
+  | n < one = pure nil
+  | otherwise = do
+      a <- m
+      as <- replicateM (n - one) m
+      pure (cons a as)
 
 -- | Create a list by repeating an element
 repeat :: forall a. a -> List a
