@@ -5,7 +5,7 @@ import Prelude
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log, logShow)
 
-import Data.List.Lazy (List, nil, cons, zip, zipWith, intersectBy, intersect, (\\), deleteBy, delete, unionBy, union, nubBy, nub, groupBy, group, span, dropWhile, drop, takeWhile, take, catMaybes, mapMaybe, range, filter, concat, concatMap, reverse, alterAt, modifyAt, updateAt, deleteAt, insertAt, (!!), uncons, init, tail, last, head, insertBy, insert, length, null, singleton, fromFoldable, transpose, (:), replicate, replicateM)
+import Data.List.Lazy
 import Data.Maybe (Maybe(..), isNothing, fromJust)
 import Data.Tuple (Tuple(..))
 
@@ -250,9 +250,15 @@ testListLazy = do
   log "zipWith should use the specified function to zip two lists together"
   assert $ zipWith (\x y -> l [show x, y]) (l [1, 2, 3]) (l ["a", "b", "c"]) == l [l ["1", "a"], l ["2", "b"], l ["3", "c"]]
 
-  -- log "zipWithA should use the specified function to zip two lists together"
-  -- assert $ zipWithA (\x y -> Just $ Tuple x y) (l [1, 2, 3]) (l ["a", "b", "c"]) == Just (l [Tuple 1 "a", Tuple 2 "b", Tuple 3 "c"])
+  log "zipWithA should use the specified function to zip two lists together"
+  assert $ zipWithA (\x y -> Just $ Tuple x y) (l [1, 2, 3]) (l ["a", "b", "c"]) == Just (l [Tuple 1 "a", Tuple 2 "b", Tuple 3 "c"])
 
+  log "zipWithA should work with infinite lists"
+  assert $
+    let inf = repeat 1
+        ints = replicate 10 3
+        zipped = zipWithA (\x y -> Just (x + y)) inf ints
+     in map length zipped == pure (length ints)
   log "zip should use the specified function to zip two lists together"
   assert $ zip (l [1, 2, 3]) (l ["a", "b", "c"]) == l [Tuple 1 "a", Tuple 2 "b", Tuple 3 "c"]
 

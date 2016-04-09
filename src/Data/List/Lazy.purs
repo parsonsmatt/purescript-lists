@@ -83,7 +83,7 @@ module Data.List.Lazy
   , intersectBy
 
   , zipWith
-  -- , zipWithA
+  , zipWithA
   , zip
   -- , unzip
 
@@ -628,6 +628,11 @@ zipWith f xs ys = List (go <$> runList xs <*> runList ys)
 -- | Running time: `O(min(m, n))`
 zip :: forall a b. List a -> List b -> List (Tuple a b)
 zip = zipWith Tuple
+
+-- | A generalization of `zipWith` which accumulates results in some `Applicative`
+-- | functor.
+zipWithA :: forall m a b c. Applicative m => (a -> b -> m c) -> List a -> List b -> m (List c)
+zipWithA f xs ys = sequence (zipWith f xs ys)
 
 --------------------------------------------------------------------------------
 -- Transpose -------------------------------------------------------------------
