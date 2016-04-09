@@ -262,8 +262,8 @@ testListLazy = do
   log "zip should use the specified function to zip two lists together"
   assert $ zip (l [1, 2, 3]) (l ["a", "b", "c"]) == l [Tuple 1 "a", Tuple 2 "b", Tuple 3 "c"]
 
-  -- log "unzip should deconstruct a list of tuples into a tuple of lists"
-  -- assert $ unzip (l [Tuple 1 "a", Tuple 2 "b", Tuple 3 "c"]) == Tuple (l [1, 2, 3]) (l ["a", "b", "c"])
+  log "unzip should deconstruct a list of tuples into a tuple of lists"
+  assert $ unzip (l [Tuple 1 "a", Tuple 2 "b", Tuple 3 "c"]) == Tuple (l [1, 2, 3]) (l ["a", "b", "c"])
 
   -- log "foldM should perform a fold using a monadic step function"
   -- assert $ foldM (\x y -> Just (x + y)) 0 (range 1 10) == Just 55

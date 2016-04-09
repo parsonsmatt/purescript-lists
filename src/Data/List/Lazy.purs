@@ -85,7 +85,7 @@ module Data.List.Lazy
   , zipWith
   , zipWithA
   , zip
-  -- , unzip
+  , unzip
 
   , transpose
 
@@ -623,16 +623,21 @@ zipWith f xs ys = List (go <$> runList xs <*> runList ys)
   go _ Nil = Nil
   go (Cons a as) (Cons b bs) = Cons (f a b) (zipWith f as bs)
 
+-- | A generalization of `zipWith` which accumulates results in some `Applicative`
+-- | functor.
+zipWithA :: forall m a b c. Applicative m => (a -> b -> m c) -> List a -> List b -> m (List c)
+zipWithA f xs ys = sequence (zipWith f xs ys)
+
 -- | Collect pairs of elements at the same positions in two lists.
 -- |
 -- | Running time: `O(min(m, n))`
 zip :: forall a b. List a -> List b -> List (Tuple a b)
 zip = zipWith Tuple
 
--- | A generalization of `zipWith` which accumulates results in some `Applicative`
--- | functor.
-zipWithA :: forall m a b c. Applicative m => (a -> b -> m c) -> List a -> List b -> m (List c)
-zipWithA f xs ys = sequence (zipWith f xs ys)
+-- | Transforms a list of pairs into a list of first components and a list of
+-- | second components.
+unzip :: forall a b. List (Tuple a b) -> Tuple (List a) (List b)
+unzip = foldr (\(Tuple a b) (Tuple as bs) -> Tuple (cons a as) (cons b bs)) (Tuple nil nil)
 
 --------------------------------------------------------------------------------
 -- Transpose -------------------------------------------------------------------
@@ -659,6 +664,7 @@ transpose xs =
           transpose xss
         Just { head: x, tail: xs } ->
           (x : mapMaybe head xss) : transpose (xs : mapMaybe tail xss)
+
 
 --------------------------------------------------------------------------------
 -- Instances -------------------------------------------------------------------
